@@ -10,7 +10,7 @@ _filp_pic_bboxes 翻转/镜像
 _cutout 随机盖住一个或多个块
 _changeLight  调整亮度  因为调用的包出了错误 暂时没有弄上
 _addNoise    加噪声  同样原因没有弄上
-还想写一个resize
+
 
 '''
 import time
@@ -45,7 +45,9 @@ class AugmentDetection():
                  cut_out_holes=1,          #遮盖数
                  cut_out_threshold=0.5,    #遮盖阈值
                  crop_size=0.9,            #裁切比例  裁切下来的长宽为  0.9~1 原图比
-                 crop_rate=0.8):           #裁切概率
+                 crop_rate=0.8,            #裁切概率
+                 resize_img=1,             #是否缩放
+                 resize_param=1.0/2.0):    #缩放比例
 
 
 
@@ -58,8 +60,24 @@ class AugmentDetection():
         self.cut_out_threshold = cut_out_threshold
         self.crop_size=crop_size
         self.crop_rate=crop_rate
+        self.resize_img=resize_img
+        self.resize_param=resize_param
 
 
+
+    def _resize_img_bboxes(self,img,bboxes):
+        w = img.shape[1]
+        h = img.shape[0]
+        resize_width=int(w*self.resize_param)
+        resize_height=int(h*self.resize_param)
+
+        img_resize=cv2.resize(img,(resize_width,resize_height))
+
+        resize_bboxes = list()
+        for bbox in bboxes:
+            resize_bboxes.append([bbox[0]*self.resize_param, bbox[1]*self.resize_param, bbox[2]*self.resize_param, bbox[3]*self.resize_param, bbox[4]])
+
+        return img_resize, resize_bboxes
 
     # cutout
     def _cutout(self, img, bboxes, length, n_holes=1, threshold=0.5):
@@ -310,6 +328,9 @@ class AugmentDetection():
 
                 change_num += 1
                 img, bboxes = self._filp_pic_bboxes(img, bboxes)
+        if self.resize_img:
+
+            img, bboxes = self._resize_img_bboxes(img, bboxes)
 
         return img, bboxes,flag_empty
 
