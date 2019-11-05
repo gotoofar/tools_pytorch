@@ -11,6 +11,7 @@ _cutout 随机盖住一个或多个块
 _changeLight  调整亮度  因为调用的包出了错误 暂时没有弄上
 _addNoise    加噪声  同样原因没有弄上
 
+需要的包 xml_helper.py
 
 '''
 import time
