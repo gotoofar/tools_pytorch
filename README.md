@@ -6,3 +6,4 @@
 * xml_helper.py  				xml文件的读取与生成
 * data_augmentor_generate.py    图像数据增强（不包括标注,适用于图像分类）
 * calcu_mean.py   计算图像各通道均值，用于预处理
+* Map_calcu    目标检测结果的指标计算
